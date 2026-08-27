@@ -15,7 +15,7 @@ import AppButton from '../src/components/AppButton';
 import { COLORS } from '../src/constants/Theme';
 import {useRouter} from 'expo-router'
 
-const API_URL = "http://192.168.137.70:3000"; //Ajustando o IP e a porta do back-end e do front-end
+const API_URL = "http://192.168.18.7:3000"; //Ajustando o IP e a porta do back-end e do front-end
 
 export default function Register() {
     
@@ -28,7 +28,7 @@ export default function Register() {
     const router = useRouter();
 
     async function handleRegister() {
-        if(!nome || !email || !senha ||confirmarSenha){
+        if(!nome || !email || !senha || !confirmarSenha){
             Alert.alert("Preencha todos os campos");
             return;
         }
@@ -45,7 +45,7 @@ export default function Register() {
             const response = await fetch(`${API_URL}/cadastrar`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "aplication/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({nome, email, senha}),
             });
@@ -57,7 +57,7 @@ export default function Register() {
             }
 
             Alert.alert("Usuario Cadastrado com sucesso!");
-            router.push('/index');
+            router.push('/');
 
         } catch (error){
             Alert.alert("Erro", error.message);
@@ -78,9 +78,9 @@ export default function Register() {
                     <AppInput label="Senha" placeholder="Digite sua senha" secureTextEntry value={senha} onChangeText={setSenha} />
                     <AppInput label="Confirmar senha" placeholder="Confirme sua senha" secureTextEntry value={confirmarSenha}
                     onChangeText={setConfirmarSenha} />
-                    <AppButton title="Registrar" loading={loading}/>
+                    <AppButton title="Registrar" loading={loading} onPress={handleRegister}/>
                     <TouchableOpacity>
-                        <Text style={styles.link} onPress={() => router.push('/index')}>Já tem uma conta ?</Text>
+                        <Text style={styles.link} onPress={() => router.push('/')}>Já tem uma conta ?</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>

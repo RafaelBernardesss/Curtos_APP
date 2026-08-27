@@ -8,14 +8,15 @@ import {
     SafeAreaViewBase,
     TouchableOpacity,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    Alert
 } from "react-native";
 import { useRouter } from 'expo-router';
 import AppButton from '../src/components/AppButton';
 import AppInput from '../src/components/AppInput';
 import { COLORS } from '../src/constants/Theme';
 
-
+const API_URL = "http://192.168.18.7:3000";
 
 export default function App() {
 
@@ -24,6 +25,12 @@ export default function App() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+
+    async function handleLogin() {
+        if(!email || !senha ) {
+            Alert.alert("Preencha todos os campos")
+        }
+    }
 
     return (
         <KeyboardAvoidingView style={styles.container}
@@ -34,7 +41,7 @@ export default function App() {
                 <AppInput label="Email" placeholder="Digite seu email" autoCapitalize="none" keyboardType="email-address"
                     value={email} onChangeText={setEmail} />
                 <AppInput label="senha" secureTextEntry placeholder="Digite sua senha" value={senha} onChangeText={setSenha} />
-                <AppButton title="Entrar" loading={loading} />
+                <AppButton title="Entrar" loading={loading}  onPress={handleLogin}/>
                 <TouchableOpacity>
                     <Text style={styles.link} onPress={() => router.push('/RegisterScreen')}>Criar uma conta</Text>
                 </TouchableOpacity>
