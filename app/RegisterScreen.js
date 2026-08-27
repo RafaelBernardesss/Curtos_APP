@@ -7,21 +7,65 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import AppInput from '../src/components/AppInput';
 import AppButton from '../src/components/AppButton';
 import { COLORS } from '../src/constants/Theme';
 import {useRouter} from 'expo-router'
 
-export default function Register() {
+const API_URL = "http://192.168.137.70:3000"; //Ajustando o IP e a porta do back-end e do front-end
 
+export default function Register() {
+    
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [confirmarSenha, setConfirmarSenha] = useState('');
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+
+    async function handleRegister() {
+        if(!nome || !email || !senha ||confirmarSenha){
+            Alert.alert("Preencha todos os campos");
+            return;
+        }
+
+        if(senha !== confirmarSenha){
+            Alert.alert("A senha não esta igual")
+            return;
+        }
+
+        setLoading(true);
+
+        try{
+
+            const response = await fetch(`${API_URL}/cadastrar`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "aplication/json",
+                },
+                body: JSON.stringify({nome, email, senha}),
+            });
+
+            const data = await response.json();
+
+            if(!response.ok){
+                throw new Error(data.message || "Erro ao cadastrar");
+            }
+
+            Alert.alert("Usuario Cadastrado com sucesso!");
+            router.push('/index');
+
+        } catch (error){
+            Alert.alert("Erro", error.message);
+        } finally {
+            setLoading(false)
+        }
+    }
+
 
     return (
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==='ios' ? 'padding': 'height'}>
@@ -32,8 +76,8 @@ export default function Register() {
                     <AppInput label="Email" placeholder="exemple@gmail.com" autoCapitalize="none" keyboardType="email-address"
                     value={email} onChangeText={setEmail} />
                     <AppInput label="Senha" placeholder="Digite sua senha" secureTextEntry value={senha} onChangeText={setSenha} />
-                    <AppInput label="Confirmar senha" placeholder="Confirme sua senha" secureTextEntry value={senha}
-                    onChangeText={setSenha} />
+                    <AppInput label="Confirmar senha" placeholder="Confirme sua senha" secureTextEntry value={confirmarSenha}
+                    onChangeText={setConfirmarSenha} />
                     <AppButton title="Registrar" loading={loading}/>
                     <TouchableOpacity>
                         <Text style={styles.link} onPress={() => router.push('/index')}>Já tem uma conta ?</Text>
