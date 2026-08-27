@@ -15,7 +15,7 @@ import AppButton from '../src/components/AppButton';
 import { COLORS } from '../src/constants/Theme';
 import {useRouter} from 'expo-router'
 
-const API_URL = "http://192.168.18.7:3000"; //Ajustando o IP e a porta do back-end e do front-end
+const API_URL = "http://192.168.137.70:3000"; //Ajustando o IP e a porta do back-end e do front-end
 
 export default function Register() {
     
@@ -27,12 +27,13 @@ export default function Register() {
 
     const router = useRouter();
 
+    //função para registrar
     async function handleRegister() {
         if(!nome || !email || !senha || !confirmarSenha){
             Alert.alert("Preencha todos os campos");
             return;
         }
-
+        //condição para a verificação da senha
         if(senha !== confirmarSenha){
             Alert.alert("A senha não esta igual")
             return;
@@ -41,7 +42,7 @@ export default function Register() {
         setLoading(true);
 
         try{
-
+            //Variavel para poder postar 
             const response = await fetch(`${API_URL}/cadastrar`, {
                 method: "POST",
                 headers: {

@@ -16,7 +16,7 @@ import AppButton from '../src/components/AppButton';
 import AppInput from '../src/components/AppInput';
 import { COLORS } from '../src/constants/Theme';
 
-const API_URL = "http://192.168.18.7:3000";
+const API_URL = "http://192.168.137.70:3000";
 
 export default function App() {
 
@@ -29,6 +29,33 @@ export default function App() {
     async function handleLogin() {
         if(!email || !senha ) {
             Alert.alert("Preencha todos os campos")
+            return;
+        }
+
+        setLoading(true);
+        try{
+            const response = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({email, senha})
+            });
+
+            const data = await response.json();
+
+            if(!response.ok) {
+                throw new Error(data.message || "Erro ao cadastrar")
+            }
+            
+            Alert.alert("Logado com sucesso!");
+            console.log("Tentando navegar para Home")
+            router.push('/Telas/HomeScreen')
+
+        } catch(error){
+            Alert.alert("Erro", error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
